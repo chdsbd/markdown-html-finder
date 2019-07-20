@@ -1,0 +1,19 @@
+[package]
+name = "string-sum"
+version = "0.1.0"
+edition = "2018"
+authors =[]
+
+[lib]
+name = "string_sum"
+crate-type = ["cdylib"]
+
+[dependencies.pyo3]
+version = "0.7.0"
+features = ["extension-module"]
+
+[target.x86_64-apple-darwin]
+rustflags = [
+  "-C", "link-arg=-undefined",
+  "-C", "link-arg=dynamic_lookup",
+]

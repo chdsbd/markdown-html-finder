@@ -1,0 +1,11 @@
+[tool.poetry]
+name = "string-sum"
+version = "0.1.0"
+description = ""
+authors = []
+
+[tool.poetry.dependencies]
+python = "^3.7"
+
+[tool.poetry.dev-dependencies]
+pyo3-pack = "^0.6.1"
