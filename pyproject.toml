@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "string-sum"
+name = "markdown-html-finder"
 version = "0.1.0"
 description = ""
 authors = []
