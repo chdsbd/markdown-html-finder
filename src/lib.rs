@@ -3,18 +3,18 @@ use pulldown_cmark::{Event, Options, Parser};
 use pyo3::prelude::*;
 use pyo3::wrap_pyfunction;
 
-#[pyfunction]
-/// Find positions of html nodes in a markdown file
-///
-/// Returns a list of tuples of start and end positions
-fn find_html_positions_py(markdown: &str) -> PyResult<Vec<(usize, usize)>> {
-    Ok(find_html_positions(markdown))
-}
-
 /// Module for finding HTML from markdown
 #[pymodule]
 fn markdown_html_finder(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_wrapped(wrap_pyfunction!(find_html_positions_py))?;
+
+    #[pyfn(m, "find_html_positions")]
+    /// Find positions of html nodes in a markdown file
+    ///
+    /// Returns a list of tuples of start and end positions
+    fn find_html_positions_py(markdown: &str) -> PyResult<Vec<(usize, usize)>> {
+        Ok(find_html_positions(markdown))
+    }
 
     Ok(())
 }
