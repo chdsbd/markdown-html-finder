@@ -45,14 +45,21 @@ poetry run pyo3-pack build
 poetry run pyo3-pack publish
 ```
 
-### markdown-html-finder-builder build
+### markdown-html-finder-builder
+This container extends the [quay.io/pypa/manylinux2010_x86_64](https://quay.io/pypa/manylinux2010_x86_64) docker image and is based on the [konstin2/pyo3-pack](https://hub.docker.com/r/konstin2/pyo3-pack) image, with Python2 removed from the support versions.
+
+This image is built and uploaded manually to Docker Hub when necessary.
+
 ```bash
+# build and publish a new version
 VERSION='0.2.0'
 docker build -f build.Dockerfile . --tag cdignam/markdown-html-finder-builder:$VERSION
+docker push cdignam/markdown-html-finder-builder:$VERSION
 ```
 
 ### production build
 Update the version in Cargo.toml and run the following commands to build and upload linux wheels.
+
 ```bash
 VERSION='0.2.0'
 
