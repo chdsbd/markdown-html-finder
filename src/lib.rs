@@ -2,6 +2,7 @@ use pulldown_cmark;
 use pulldown_cmark::{Event, Options, Parser};
 use pyo3::prelude::*;
 use pyo3::wrap_pyfunction;
+use pyo3::exceptions;
 
 /// Module for finding HTML from markdown
 #[pymodule]
@@ -13,6 +14,9 @@ fn markdown_html_finder(_py: Python, m: &PyModule) -> PyResult<()> {
     ///
     /// Returns a list of tuples of start and end positions
     fn find_html_positions_py(markdown: &str) -> PyResult<Vec<(usize, usize)>> {
+            if markdown.chars().find(|&x| x == '\r').is_some() {
+        return Err(exceptions::ValueError::py_err("carriage returns are unsupported, please strip them from your input."));
+    }
         Ok(find_html_positions(markdown))
     }
 
