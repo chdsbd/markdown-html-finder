@@ -2,7 +2,7 @@ FROM quay.io/pypa/manylinux1_x86_64
 
 ENV PATH /root/.cargo/bin:$PATH
 # Add all supported python versions
-ENV PATH /opt/python/cp27-cp27mu/bin/:/opt/python/cp35-cp35m/bin/:/opt/python/cp36-cp36m/bin/:/opt/python/cp37-cp37m/bin/:$PATH
+ENV PATH /opt/python/cp35-cp35m/bin/:/opt/python/cp36-cp36m/bin/:/opt/python/cp37-cp37m/bin/:$PATH
 # Otherwise `cargo new` errors
 ENV USER root
 
@@ -20,10 +20,8 @@ RUN curl https://www.musl-libc.org/releases/musl-1.1.20.tar.gz -o musl.tar.gz \
     && mkdir /io \
     && python3 -m pip install cffi
 
-ADD . /pyo3-pack/
-
-RUN cargo +nightly-2019-05-04 install --path /pyo3-pack
+RUN pip install pyo3-pack==0.7.0
 
 WORKDIR /io
 
-ENTRYPOINT ["/root/.cargo/bin/pyo3-pack"]
+ENTRYPOINT ["pyo3-pack"]
