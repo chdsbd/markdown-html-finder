@@ -1,8 +1,8 @@
 use pulldown_cmark;
 use pulldown_cmark::{Event, Options, Parser};
+use pyo3::exceptions;
 use pyo3::prelude::*;
 use pyo3::wrap_pyfunction;
-use pyo3::exceptions;
 
 /// Module for finding HTML from markdown
 #[pymodule]
@@ -15,7 +15,7 @@ fn markdown_html_finder(_py: Python, m: &PyModule) -> PyResult<()> {
     /// Returns a list of tuples of start and end positions
     fn find_html_positions_py(markdown: &'static str) -> PyResult<Vec<(usize, usize)>> {
         match find_html_positions(markdown) {
-            Ok(result)  => Ok(result),
+            Ok(result) => Ok(result),
             Err(err_message) => Err(exceptions::ValueError::py_err(err_message)),
         }
     }
@@ -31,9 +31,7 @@ fn find_html_positions(markdown: &str) -> Result<Vec<(usize, usize)>, &str> {
     let results = Parser::new_ext(markdown, Options::empty())
         .into_offset_iter()
         .filter(|(event, range)| match event {
-            Event::Html(..) | Event::InlineHtml(..) | Event::SoftBreak | Event::HardBreak => {
-            true
-        },
+            Event::Html(..) | Event::InlineHtml(..) | Event::SoftBreak | Event::HardBreak => true,
             _ => false,
         })
         .map(|(_event, range)| (range.start, range.end))
