@@ -64,7 +64,7 @@ Update the version in Cargo.toml and run the following commands to build and upl
 VERSION='0.2.0'
 
 # build manylinux wheels 
-docker run --rm -v $(pwd):/io cdignam/markdown-html-finder-builder:$VERSION   build --release
+docker run --rm -v $(pwd):/io cdignam/markdown-html-finder-builder:$VERSION build --release
 
 # build macos wheel (only builds for installed Python version)
 pyo3-pack build --release
