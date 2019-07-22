@@ -47,13 +47,13 @@ fn test_join_adjacent_spans() {
 }
 
 fn find_html_positions(markdown: &str) -> Result<Vec<(usize, usize)>, &str> {
-    if markdown.chars().find(|&x| x == '\r').is_some() {
+    if markdown.chars().any(|x| x == '\r') {
         return Err("carriage returns are unsupported, please strip them from your input.");
     }
 
     let results = Parser::new_ext(markdown, Options::empty())
         .into_offset_iter()
-        .filter(|(event, range)| match event {
+        .filter(|(event, _range)| match event {
             Event::Html(..) | Event::InlineHtml(..) | Event::SoftBreak | Event::HardBreak => true,
             _ => false,
         })
