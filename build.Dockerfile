@@ -20,7 +20,7 @@ RUN curl https://www.musl-libc.org/releases/musl-1.1.20.tar.gz -o musl.tar.gz \
     && mkdir /io \
     && python3 -m pip install cffi
 
-RUN pip install pyo3-pack==0.7.0
+RUN pip install pyo3-pack==0.7.0b10
 
 WORKDIR /io
 
