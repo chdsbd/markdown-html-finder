@@ -13,14 +13,11 @@ fn markdown_html_finder(_py: Python, m: &PyModule) -> PyResult<()> {
     /// Find positions of html nodes in a markdown file
     ///
     /// Returns a list of tuples of start and end positions
-    /// 
+    ///
     /// Raises ValueError when passed carriage returns. You must strip carriage
     /// returns before calling this function.
     fn find_html_positions_py(markdown: &'static str) -> PyResult<Vec<(usize, usize)>> {
-        match find_html_positions(markdown) {
-            Ok(result) => Ok(result),
-            Err(err_message) => Err(exceptions::ValueError::py_err(err_message)),
-        }
+        find_html_positions(markdown).map_err(|msg| exceptions::ValueError::py_err(msg))
     }
 
     Ok(())
