@@ -23,6 +23,29 @@ fn markdown_html_finder(_py: Python, m: &PyModule) -> PyResult<()> {
     Ok(())
 }
 
+fn join_adjacent_spans(spans: Vec<(usize, usize)>) -> Vec<(usize, usize)> {
+    let mut new_spans = Vec::new();
+    for span in spans.iter() {
+        let (span_start, span_end) = span;
+        if let Some(prev_span) = new_spans.last_mut() {
+            let (prev_start, prev_end) = prev_span;
+            if prev_end == span_start {
+                *prev_span = (*prev_start, *span_end);
+                continue;
+            }
+        }
+        new_spans.push(span.clone());
+    }
+    new_spans
+}
+
+#[test]
+fn test_join_adjacent_spans() {
+    let source = vec![(1, 3), (3, 6), (10, 12), (15, 16), (16, 18)];
+    let expected = vec![(1, 6), (10, 12), (15, 18)];
+    assert_eq!(join_adjacent_spans(source), (expected));
+}
+
 fn find_html_positions(markdown: &str) -> Result<Vec<(usize, usize)>, &str> {
     if markdown.chars().find(|&x| x == '\r').is_some() {
         return Err("carriage returns are unsupported, please strip them from your input.");
@@ -36,8 +59,7 @@ fn find_html_positions(markdown: &str) -> Result<Vec<(usize, usize)>, &str> {
         })
         .map(|(_event, range)| (range.start, range.end))
         .collect();
-    Ok(results)
-    // TODO(chdsbd): combine adjacent spans
+    Ok(join_adjacent_spans(results))
 }
 
 #[cfg(test)]
@@ -54,13 +76,13 @@ mod tests {
         let source = r##"testing
 <p align=center><img src="https://github.com/chdsbd/kodiak/raw/master/assets/logo.png" alt="" width="200" height="200"><!-- comment-a --></p><!-- comment-b -->test
 hello"##;
-        let expected = vec![(8, 172), (172, 177)];
+        let expected = vec![(8, 177)];
         assert_eq!(find_html_positions(source), Ok(expected));
     }
     #[test]
     fn find_html_positions_complex_two() {
         let source = "hello <span>  <p>  <!-- testing --> hello</p></span>world";
-        let expected = vec![(6, 52)];
+        let expected = vec![(6, 12), (14, 17), (19, 35), (41, 52)];
         assert_eq!(find_html_positions(source), Ok(expected));
     }
     #[test]
