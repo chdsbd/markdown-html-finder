@@ -24,13 +24,13 @@ fn markdown_html_finder(_py: Python, m: &PyModule) -> PyResult<()> {
 }
 
 fn join_adjacent_spans(spans: Vec<(usize, usize)>) -> Vec<(usize, usize)> {
-    let mut new_spans = Vec::new();
+    let mut new_spans: Vec<(usize, usize)> = Vec::new();
     for span in spans.iter() {
-        let (span_start, span_end) = span;
+        let (span_start, span_end) = *span;
         if let Some(prev_span) = new_spans.last_mut() {
-            let (prev_start, prev_end): (usize, usize) = *prev_span;
-            if prev_end >= *span_start {
-                *prev_span = (prev_start, *span_end);
+            let (prev_start, prev_end) = *prev_span;
+            if prev_end >= span_start {
+                *prev_span = (prev_start, span_end);
                 continue;
             }
         }
