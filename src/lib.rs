@@ -25,7 +25,8 @@ fn markdown_html_finder(_py: Python, m: &PyModule) -> PyResult<()> {
 
 fn join_adjacent_spans(spans: Vec<(usize, usize)>) -> Vec<(usize, usize)> {
     let mut new_spans = Vec::new();
-    for (span_start, span_end) in spans.iter() {
+    for span in spans.iter() {
+        let (span_start, span_end) = span;
         if let Some(prev_span) = new_spans.last_mut() {
             let (prev_start, prev_end) = prev_span;
             if prev_end == span_start {
@@ -40,7 +41,7 @@ fn join_adjacent_spans(spans: Vec<(usize, usize)>) -> Vec<(usize, usize)> {
 
 #[test]
 fn test_join_adjacent_spans() {
-    let source = vec![(1, 3), (3, 6), (10, 12), (15, 16), (16, 18)];
+    let source = vec![(1, 3), (3, 6), (10, 12), (15, 17), (16, 18)];
     let expected = vec![(1, 6), (10, 12), (15, 18)];
     assert_eq!(join_adjacent_spans(source), (expected));
 }
