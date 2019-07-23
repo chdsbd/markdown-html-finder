@@ -1,5 +1,13 @@
-# markdown-html-finder
-An experiment with writing Python modules in Rust using [pyo3](https://github.com/PyO3/pyo3) and [pyo3-pack](https://github.com/PyO3/pyo3-pack).
+# markdown-html-finder [![PyPI](https://img.shields.io/pypi/v/markdown-html-finder.svg)](https://pypi.org/project/markdown-html-finder/)
+
+A Python library to locate HTML spans in markdown text. This library is written in Rust with bindings for Python.
+
+## why?
+For a [separate project](https://github.com/chdsbd/kodiak) I needed to locate HTML comments in markdown documents. Sadly the markdown parsers I found for Python didn't provide span information for nodes.
+
+While it wouldn't be too hard to add some features to existing Python markdown parsers, I thought it would be interesting to see how Rust can be used from Python. The excellent [pulldown-cmark](https://github.com/raphlinus/pulldown-cmark) crate provides span information for HTML elements, so that's what we use here.
+
+[pyo3](https://github.com/PyO3/pyo3) and [pyo3-pack](https://github.com/PyO3/pyo3-pack) do the hard work of providing bindings to Python and building wheels to distribute on PyPi.
 
 ## install
 
