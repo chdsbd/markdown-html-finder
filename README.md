@@ -46,11 +46,8 @@ poetry install
 # build for python development
 poetry run pyo3-pack development
 
-# build for release
-poetry run pyo3-pack build
-
-# publish
-poetry run pyo3-pack publish
+# build and publish
+./s/build
 ```
 
 ### markdown-html-finder-builder
