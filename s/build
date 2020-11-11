@@ -26,42 +26,52 @@ def main() -> None:
         pass
 
     subprocess.check_call(["./.venv/bin/pyo3-pack", "build"], cwd=cwd)
-
-    with tempfile.TemporaryDirectory() as dirpath:
-        subprocess.check_call(
-            [
-                "./.venv/bin/wheel",
-                "unpack",
-                "--dest",
-                dirpath,
-                f"./target/wheels/markdown_html_finder-{version}-cp37-cp37m-macosx_10_7_x86_64.whl",
-            ],
-            cwd=cwd,
-        )
-
-        unpack_dir = os.path.join(dirpath, f"markdown_html_finder-{version}")
-
-        print("adding type stubs to wheel")
-        subprocess.check_call(
-            ["cp", "-R", "./markdown_html_finder", unpack_dir], cwd=cwd
-        )
-
-        dist_dir.mkdir(exist_ok=True)
-        subprocess.check_call(
-            ["./.venv/bin/wheel", "pack", "--dest", dist_dir, unpack_dir], cwd=cwd
-        )
-
-    output_wheel = (
-        dist_dir / f"markdown_html_finder-{version}-cp37-cp37m-macosx_10_7_x86_64.whl"
+    subprocess.check_call(
+        [
+            "docker",
+            "run",
+            "--rm",
+            "-v",
+            f"{cwd}:/io",
+            "cdignam/markdown-html-finder-builder:0.2.0",
+            "build",
+            "--release",
+        ],
+        cwd=cwd,
     )
-    assert output_wheel.exists()
 
-    # smoke test to ensure we added the type stubs
-    zip_files = set(ZipFile(output_wheel).namelist())
-    for path in (cwd / "markdown_html_finder").glob("*"):
-        assert str(path) in zip_files
+    for wheel_path in (cwd / "target" / "wheels").glob("*.whl"):
+        if f"markdown_html_finder-{version}" not in str(wheel_path):
+            continue
+        with tempfile.TemporaryDirectory() as dirpath:
+            subprocess.check_call(
+                ["./.venv/bin/wheel", "unpack", "--dest", dirpath, wheel_path], cwd=cwd
+            )
 
-    subprocess.check_call(["./.venv/bin/twine", "upload", output_wheel], cwd=cwd)
+            unpack_dir = os.path.join(dirpath, f"markdown_html_finder-{version}")
+
+            print("adding type stubs to wheel")
+            subprocess.check_call(
+                ["cp", "-R", "./py_src/markdown_html_finder", unpack_dir], cwd=cwd
+            )
+
+            dist_dir.mkdir(exist_ok=True)
+            subprocess.check_call(
+                ["./.venv/bin/wheel", "pack", "--dest", dist_dir, unpack_dir], cwd=cwd
+            )
+
+        output_wheel = dist_dir / wheel_path.name
+        assert output_wheel.exists()
+
+        # smoke test to ensure we added the type stubs
+        zip_files = {Path(x).name for x in ZipFile(output_wheel).namelist()}
+        for path in (cwd / "py_src/markdown_html_finder").glob("*"):
+            assert str(path.name) in zip_files, f"{path} not found in {zip_files}"
+
+    subprocess.check_call(
+        ["./.venv/bin/twine", "upload", "--skip-existing", *dist_dir.glob("*.whl")],
+        cwd=cwd,
+    )
 
 
 if __name__ == "__main__":
