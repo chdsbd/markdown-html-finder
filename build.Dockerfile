@@ -1,8 +1,8 @@
-FROM quay.io/pypa/manylinux1_x86_64@sha256:721ac30ffd4cd4cf2852626e14dc506c8910f27835ab7e70248580d332b9a785
+FROM quay.io/pypa/manylinux1_x86_64
 
 ENV PATH /root/.cargo/bin:$PATH
 # Add all supported python versions
-ENV PATH /opt/python/cp35-cp35m/bin/:/opt/python/cp36-cp36m/bin/:/opt/python/cp37-cp37m/bin/:$PATH
+ENV PATH /opt/python/cp35-cp35m/bin/:/opt/python/cp36-cp36m/bin/:/opt/python/cp37-cp37m/bin/:/opt/python/cp38-cp38m/bin/:/opt/python/cp39-cp39m/bin/:$PATH
 # Otherwise `cargo new` errors
 ENV USER root
 
