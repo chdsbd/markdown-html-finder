@@ -50,6 +50,23 @@ poetry run pyo3-pack development
 ./s/build
 ```
 
+### building wheels
+We need a wheel per version and platform. To support Python 3.7, 3.8, 3.9 we need to have 3.7, 3.8, 3.9 installed on macOS and Linux. For macOS we can use pyenv. For Linux we can use a Docker container.
+
+#### macos
+1. install pyenv
+2. install each python version we want to support via `pyenv install`. Use `pyenv install --list` to see the available options.
+3. add your new Python installs globally via `pyenv global 3.8.7 3.9.0`
+4. configure your $PATH with the .pyenv python versions. use `pyenv shims` to find the binary paths and add them, like `PATH=/Users/chris/.pyenv/shims/:$PATH`
+5. verify your Python versions are accessible via `python3.9` and verify pyo3-pack can find your python versions via `./.venv/bin/pyo3-pack list-python`
+6. build the macOS wheels via `./.venv/bin/pyo3-pack build`
+7. upload wheels to pypi via `./.venv/bin/twine upload --skip-existing target/wheels/*`
+
+#### linux
+1. use the docker container to build all the Linux Python wheels via `docker run --rm -v $(pwd):/io cdignam/markdown-html-finder-builder:0.3.0 build --release`
+2. upload wheels to pypi via `./.venv/bin/twine upload --skip-existing target/wheels/*`
+
+
 ### markdown-html-finder-builder
 This container extends the [quay.io/pypa/manylinux2010_x86_64](https://quay.io/pypa/manylinux2010_x86_64) docker image and is based on the [konstin2/pyo3-pack](https://hub.docker.com/r/konstin2/pyo3-pack) image, with Python2 support removed.
 
