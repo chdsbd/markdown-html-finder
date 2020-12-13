@@ -1,6 +1,6 @@
 [package]
 name = "markdown-html-finder"
-version = "0.2.2"
+version = "0.2.3"
 edition = "2018"
 description = "A Python library to find html in strings"
 repository = "https://github.com/chdsbd/markdown-html-finder"
