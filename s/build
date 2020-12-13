@@ -25,15 +25,15 @@ def main() -> None:
     except FileNotFoundError:
         pass
 
-    subprocess.check_call(["./.venv/bin/pyo3-pack", "build"], cwd=cwd)
+    subprocess.check_call(["./.venv/bin/maturin", "build"], cwd=cwd)
     subprocess.check_call(
         [
             "docker",
             "run",
             "--rm",
             "-v",
-            f"{cwd}:/io",
-            "cdignam/markdown-html-finder-builder:0.2.0",
+            f"{cwd.absolute()}:/io",
+            "cdignam/markdown-html-finder-builder:0.3.0",
             "build",
             "--release",
         ],
