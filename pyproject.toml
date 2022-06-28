@@ -11,9 +11,9 @@ python = "^3.7"
 wheel = "^0.35.1"
 toml = "^0.10.2"
 ipython = "^7.19"
-flake8 = {version = "^3.8",allows-prereleases = true}
-black = {version = "^18.3-alpha.0",allows-prereleases = true}
-isort = {version = "^5.6",allows-prereleases = true}
-mypy = "^0.790.0"
-twine = "^3.2"
-maturin = "^0.8.3"
+flake8 = {version = "^3.8",allow-prereleases = true}
+black = {version = "^18.3-alpha.0",allow-prereleases = true}
+isort = {version = "^5.6",allow-prereleases = true}
+mypy = "^0.961"
+twine = "^4.0.1"
+maturin = "^0.12.20"
