@@ -16,5 +16,5 @@ crate-type = ["cdylib"]
 pulldown-cmark = "0.5.3"
 
 [dependencies.pyo3]
-version = "0.7.0"
+version = "0.16.5"
 features = ["extension-module"]

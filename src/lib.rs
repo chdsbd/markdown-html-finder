@@ -1,24 +1,25 @@
 use pulldown_cmark;
 use pulldown_cmark::{Event, Options, Parser};
-use pyo3::exceptions;
+use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
 use pyo3::wrap_pyfunction;
+
+#[pyfunction]
+#[pyo3(name = "find_html_positions")]
+/// Find positions of html nodes in a markdown file
+///
+/// Returns a list of tuples of start and end positions
+///
+/// Raises ValueError when passed carriage returns. You must strip carriage
+/// returns before calling this function.
+fn find_html_positions_py(markdown: &str) -> PyResult<Vec<(usize, usize)>> {
+    find_html_positions(markdown).map_err(|e| PyValueError::new_err(e))
+}
 
 /// Module for finding HTML from markdown
 #[pymodule]
 fn markdown_html_finder(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_wrapped(wrap_pyfunction!(find_html_positions_py))?;
-
-    #[pyfn(m, "find_html_positions")]
-    /// Find positions of html nodes in a markdown file
-    ///
-    /// Returns a list of tuples of start and end positions
-    ///
-    /// Raises ValueError when passed carriage returns. You must strip carriage
-    /// returns before calling this function.
-    fn find_html_positions_py(markdown: &'static str) -> PyResult<Vec<(usize, usize)>> {
-        find_html_positions(markdown).map_err(exceptions::ValueError::py_err)
-    }
 
     Ok(())
 }
@@ -45,9 +46,11 @@ fn test_join_adjacent_spans() {
     assert_eq!(join_adjacent_spans(source), (expected));
 }
 
-fn find_html_positions(markdown: &str) -> Result<Vec<(usize, usize)>, &str> {
+fn find_html_positions(markdown: &str) -> Result<Vec<(usize, usize)>, String> {
     if markdown.chars().any(|x| x == '\r') {
-        return Err("carriage returns are unsupported, please strip them from your input.");
+        return Err(
+            "carriage returns are unsupported, please strip them from your input.".to_string(),
+        );
     }
 
     let results = Parser::new_ext(markdown, Options::empty())
