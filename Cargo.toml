@@ -1,6 +1,6 @@
 [package]
 name = "markdown-html-finder"
-version = "0.2.3"
+version = "0.2.5"
 edition = "2018"
 description = "A Python library to find html in strings"
 repository = "https://github.com/chdsbd/markdown-html-finder"
@@ -16,5 +16,5 @@ crate-type = ["cdylib"]
 pulldown-cmark = "0.5.3"
 
 [dependencies.pyo3]
-version = "0.7.0"
+version = "0.16.5"
 features = ["extension-module"]
